@@ -1,9 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Nintendude92' });
+    res.render('streamkit', {title: 'Streamkit'});
 });
 
 module.exports = router;
