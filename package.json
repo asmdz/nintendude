@@ -8,6 +8,7 @@
     "dependencies": {
         "body-parser": "latest",
         "cookie-parser": "latest",
+        "request": "latest",
         "express": "latest",
         "debug": "latest",
         "pug": "latest",
