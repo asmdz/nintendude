@@ -8,9 +8,8 @@ var crypto = require('crypto');
 var config = require('../config/config.json');
 var auth = require('../config/auth.json');
 var oauth = require('../oauth.js');
+var chatMonitor = require('../chatMonitor.js');
 
-var tmi = require('tmi.js'); // TODO Temp
-var client = undefined; // TEMP
 
 router.get('/', function(req, res, next) {
     // TODO: Set up seperate code for dev and prd environments.
@@ -30,31 +29,20 @@ router.get('/', function(req, res, next) {
 
 
 router.get("/dashboard", function(req, res, next) {
+    // TODO: Get some proper error handling done.
     // Make request for user token.
-    oauth.getToken(req.query.code, req.query.state, function(body) {
-        console.log(body);
+    oauth.getToken(req.query.code, req.query.state, function(body, err) {
         body = JSON.parse(body); // TODO: Handle this in getToken fuction?
+        var token = body.access_token;
 
-        // TEMP for testing.
-        var options = {
-            'options': {
-                'clientId': auth.client_id,
-                'debug': true
-            },
-            'identity': {
-                'username': 'damouryouknow',
-                'password': 'oauth:' + body.access_token
-            },
-            'connection': {
-                'reconnect': true
-            },
-            'channels': ['#damouryouknow']
-        };
-        client = new tmi.client(options);
-        client.on('chat', function(channel, userstate, message, self) {
-            console.log(message);
+        oauth.validate(body.access_token, function(body, err) {
+            body = JSON.parse(body);
+            console.log(body);
+            var username = body.token.user_name;
+
+            console.log(username + ", " + token);
+            chatMonitor.addClient(username, token);
         });
-        client.connect();
     });
 });
 

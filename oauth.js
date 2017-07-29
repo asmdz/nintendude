@@ -19,14 +19,12 @@ module.exports.getToken = function(code, state, callback) {
         'grant_type': 'authorization_code',
         'redirect_uri': 'http://localhost:3000' + '/streamkit/dashboard',
         'state': state
-    }
+    };
 
     request({
         'url': reqUrl,
         'method': 'POST',
-        'headers': {
-            'content-type': 'application/x-www-form-urlencoded'
-        },
+        'headers': {'content-type': 'application/x-www-form-urlencoded'},
         'form': params
     },
     function (err, res, body) {
@@ -35,8 +33,17 @@ module.exports.getToken = function(code, state, callback) {
 }
 
 /*
- * 
+ *
  */
 module.exports.validate = function(token, callback) {
+     var reqUrl = 'https://api.twitch.tv/kraken';
 
+     request({
+         'url': reqUrl,
+         'method': 'GET',
+         'headers': {'Authorization': 'OAuth ' + token}
+     },
+     function(err, res, body) {
+         callback(body, err);
+     });
 }

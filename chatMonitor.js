@@ -1,14 +1,17 @@
 var tmi = require('tmi.js');
 
-var config = require('../config/config.json');
-var auth = require('../config/auth.json');
+var config = require('./config/config.json');
+var auth = require('./config/auth.json');
 
 var users = {};
 
 module.exports.addClient = function(username, token) {
     // Configure client.
     var clientConfig = {
-        'options': {'clientId': auth.client_id},
+        'options': {
+            'clientId': auth.client_id,
+            'debug': true
+        },
         'identity': {
             'username': username,
             'password': 'oauth:' + token
