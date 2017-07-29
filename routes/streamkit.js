@@ -7,7 +7,7 @@ var crypto = require('crypto');
 // TODO: Change how config is read in.
 var config = require('../config/config.json');
 var auth = require('../config/auth.json');
-
+var oauth = require('../oauth.js');
 
 router.get('/', function(req, res, next) {
     // TODO: Set up seperate code for dev and prd environments.
@@ -27,33 +27,9 @@ router.get('/', function(req, res, next) {
 
 
 router.get("/dashboard", function(req, res, next) {
-    console.log(req);
-    console.log(req.query);
-
     // Make request for user token.
-    var params = {
-        'client_id': auth.client_id,
-        'client_secret': auth.secret,
-        'code': req.query.code,
-        'grant_type': 'authorization_code',
-        'redirect_uri': 'http://localhost:3000' + '/streamkit/dashboard',
-        'state': req.query.state
-    };
-
-    var reqUrl = 'https://api.twitch.tv/kraken/oauth2/token'
-            + getQueryString(params);
-
-    console.log(reqUrl);
-
-    // FIXME parameters should be in post body, otherwise we get 404.
-    request(reqUrl, function(err, res, body) {
-        if (!err && res.statusCode == 200) {
-            console.log(body);
-        }
-        else {
-            console.log(err);
-            next(err);
-        }
+    oauth.getToken(req.query.code, req.query.state, function(body) {
+        console.log(body);
     });
 });
 
