@@ -33,3 +33,10 @@ module.exports.getToken = function(code, state, callback) {
         callback(body, err);
     });
 }
+
+/*
+ * 
+ */
+module.exports.validate = function(token, callback) {
+
+}

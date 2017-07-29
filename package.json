@@ -16,7 +16,6 @@
         "serve-favicon": "latest",
         "mongodb": "latest",
         "monk": "latest",
-        "irc": "latest",
         "tmi.js": "latest"
     }
 }

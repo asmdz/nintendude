@@ -8,10 +8,8 @@ var crypto = require('crypto');
 var config = require('../config/config.json');
 var auth = require('../config/auth.json');
 var oauth = require('../oauth.js');
-var chat = require('../chat.js');
 
-// var irc = require('irc'); // TODO: Temp. Move logic to chat.js.
-var tmi = require('tmi.js');
+var tmi = require('tmi.js'); // TODO Temp
 var client = undefined; // TEMP
 
 router.get('/', function(req, res, next) {
@@ -57,28 +55,6 @@ router.get("/dashboard", function(req, res, next) {
             console.log(message);
         });
         client.connect();
-        /*
-        // TODO: Send pongs every 5 minutes?
-        if (client != undefined) {
-            return;
-        }
-        var options = {
-            'channels': ['#damouryouknow'],
-            'server': 'irc.twitch.tv',
-            'username': 'damouryouknow',
-            'nick': 'damouryouknow',
-            'password': 'oauth:' + body.access_token,
-            'sasl': true
-        };
-        console.log(options);
-        client = new irc.Client('irc.twitch.tv', 'damouryouknow', options);
-        client.addListener('message', function(from, message) {
-            console.log("FROM " + from + ": " + message);
-        });
-        client.addListener('error', function(message) {
-            console.log("ERROR: " + message);
-        });
-        */
     });
 });
 
