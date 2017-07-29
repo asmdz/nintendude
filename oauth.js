@@ -4,6 +4,12 @@ var config = require('./config/config.json');
 var auth = require('./config/auth.json');
 
 
+/**
+ * Sends a post request to get a access token from Twitch.
+ * @param {string} code - Authorization code used to get the token.
+ * @param {string} state - State used to get the token.
+ * @param {function(object, object)} - Response callback.
+ */
 module.exports.getToken = function(code, state, callback) {
     var reqUrl = 'https://api.twitch.tv/kraken/oauth2/token';
     var params = {
@@ -24,6 +30,6 @@ module.exports.getToken = function(code, state, callback) {
         'form': params
     },
     function (err, res, body) {
-        callback(body);
+        callback(body, err);
     });
 }
