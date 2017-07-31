@@ -29,15 +29,22 @@ module.exports.addClient = function(username, token) {
     }
 
     // Add events to client.
+    newClient.on('chat', handleChat);
     newClient.on('subscription', handleSubscription);
+    newClient.on('cheer', handleCheer);
 
     // Connect client.
     newClient.connect();
 }
 
 
+function handleChat(channel, userstate, message, self) {
+    console.log('Chat event');
+}
+
+
 function handleSubscription(channel, username, method, message, userstate) {
-    console.log('Subscription event');
+    console.log('Sub event');
 }
 
 

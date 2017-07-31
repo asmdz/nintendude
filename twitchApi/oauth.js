@@ -1,7 +1,7 @@
 var request = require('request');
 
-var config = require('./config/config.json');
-var auth = require('./config/auth.json');
+var config = require('../config/config.json');
+var auth = require('../config/auth.json');
 
 
 /**
@@ -28,9 +28,10 @@ module.exports.getToken = function(code, state, callback) {
         'form': params
     },
     function (err, res, body) {
-        callback(body, err);
+        callback(err, res, body);
     });
 }
+
 
 /*
  *
@@ -44,6 +45,6 @@ module.exports.validate = function(token, callback) {
          'headers': {'Authorization': 'OAuth ' + token}
      },
      function(err, res, body) {
-         callback(body, err);
+         callback(err, res, body);
      });
 }

@@ -7,7 +7,7 @@ var crypto = require('crypto');
 // TODO: Change how config is read in.
 var config = require('../config/config.json');
 var auth = require('../config/auth.json');
-var oauth = require('../oauth.js');
+var oauth = require('../twitchApi/oauth.js');
 var chatMonitor = require('../chatMonitor.js');
 
 
@@ -24,24 +24,46 @@ router.get('/', function(req, res, next) {
     var oauthUrl = 'https://api.twitch.tv/kraken/oauth2/authorize'
             + getQueryString(oauthParams);
 
-    res.render('streamkit', {title: 'Streamkit', 'oauth_url': oauthUrl});
+    res.render('streamkit', {'title': 'Streamkit', 'oauth_url': oauthUrl});
 });
 
 
-router.get("/dashboard", function(req, res, next) {
+router.get("/dashboard", function(req, response, next) {
     // TODO: Get some proper error handling done.
     // Make request for user token.
-    oauth.getToken(req.query.code, req.query.state, function(body, err) {
+    oauth.getToken(req.query.code, req.query.state, function(err, res, body) {
+        if (err) {
+            return next(err);
+        }
+        if (res.statusCode != 200) {
+            err = new Error();
+            err.status = res.statusCode;
+            return next(err);
+        }
+
+        console.log('1: ' + body);
         body = JSON.parse(body); // TODO: Handle this in getToken fuction?
         var token = body.access_token;
 
-        oauth.validate(body.access_token, function(body, err) {
+        oauth.validate(body.access_token, function(err, res, body) {
+            if (err) {
+                return next(err);
+            }
+            if (res.statusCode != 200) {
+                err = new Error();
+                err.status = res.statusCode;
+                return next(err);
+            }
+
+            console.log('2 ' + body);
             body = JSON.parse(body);
-            console.log(body);
+            //console.log(body);
             var username = body.token.user_name;
 
             console.log(username + ", " + token);
             chatMonitor.addClient(username, token);
+
+            response.render('index', {title: 'Succ'});
         });
     });
 });
