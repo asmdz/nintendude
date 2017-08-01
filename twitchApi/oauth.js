@@ -12,12 +12,23 @@ var auth = require('../config/auth.json');
  */
 module.exports.getToken = function(code, state, callback) {
     var reqUrl = 'https://api.twitch.tv/kraken/oauth2/token';
+    
+    var redirect = 'http://localhost:4000/streamkit/dashboard';
+    // FIXME: Can't rely on req to get app here.
+    /*
+    if (req.app.get('env') == 'development') {
+        redirect = config.redirect_uri.dev;
+    } else {
+        redirect = config.redirect_uri.prd;
+    }
+    */
+
     var params = {
         'client_id': auth.client_id,
         'client_secret': auth.secret,
         'code': code,
         'grant_type': 'authorization_code',
-        'redirect_uri': 'http://localhost:3000' + '/streamkit/dashboard',
+        'redirect_uri': redirect,
         'state': state
     };
 

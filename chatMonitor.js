@@ -6,6 +6,11 @@ var auth = require('./config/auth.json');
 var users = {};
 
 module.exports.addClient = function(username, token) {
+    // Do not add client if there is already one running for the user.
+    if (username in users) {
+        return;
+    }
+
     // Configure client.
     var clientConfig = {
         'options': {

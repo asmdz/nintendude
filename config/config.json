@@ -1,3 +1,7 @@
 {
-    "scope": "chat_login"
+    "scope": "chat_login",
+    "redirect_uri": {
+        "dev": "http://localhost:4000/streamkit/dashboard",
+        "prd": "https://nintendude.org/streamkit/dashboard"
+    }
 }

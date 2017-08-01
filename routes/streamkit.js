@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var app = require('../app.js');
 
 var request = require('request');
 var crypto = require('crypto');
@@ -12,10 +13,16 @@ var chatMonitor = require('../chatMonitor.js');
 
 
 router.get('/', function(req, res, next) {
-    // TODO: Set up seperate code for dev and prd environments.
+    var redirect = '';
+    if (req.app.get('env') == 'development') {
+        redirect = config.redirect_uri.dev;
+    } else {
+        redirect = config.redirect_uri.prd;
+    }
+
     var oauthParams = {
         'client_id': auth.client_id,
-        'redirect_uri': 'http://localhost:3000' + '/streamkit/dashboard',
+        'redirect_uri': redirect,
         'response_type': "code",
         'scope': config.scope,
         'force_verify': true,
