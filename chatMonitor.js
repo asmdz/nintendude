@@ -4,43 +4,37 @@ var config = require('./config/config.json');
 var auth = require('./config/auth.json');
 
 var users = {};
+var chatClient;
 
-module.exports.addClient = function(username, token) {
-    // Do not add client if there is already one running for the user.
-    if (username in users) {
-        return;
-    }
-
-    // Configure client.
+module.exports.startClient = function() {
     var clientConfig = {
-        'options': {
-            'clientId': auth.client_id,
-            'debug': true
+        options: {
+            clientId: '',
+            debug: true
         },
-        'identity': {
-            'username': username,
-            'password': 'oauth:' + token
+        identity: {
+            username: 'BotZura',
+            password: auth.chat_token
         },
-        'connection': {'reconnect': true},
-        'channels': ['#' + username]
+        connection: {
+            reconnect: true
+        },
+        channels: []
     };
 
-    // Create client.
-    var newClient = new tmi.client(clientConfig);
+    chatClient = new tmi.client(clientConfig);
 
-    // Add client to users.
-    users[username] = {
-        'client': newClient
-    }
+    // Add event handler to client.
+    chatClient.on('chat', handleChat);
+    chatClient.on('subscription', handleSubscription);
+    chatClient.on('cheer', handleCheer);
 
-    // Add events to client.
-    newClient.on('chat', handleChat);
-    newClient.on('subscription', handleSubscription);
-    newClient.on('cheer', handleCheer);
-
-    // Connect client.
-    newClient.connect();
+    chatClient.connect();
 }
+
+module.exports.addUser = function(username) {
+    chatClient.join('#' + username);
+};
 
 
 function handleChat(channel, userstate, message, self) {

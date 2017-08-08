@@ -11,6 +11,7 @@ var auth = require('../config/auth.json');
 var oauth = require('../twitchApi/oauth.js');
 var chatMonitor = require('../chatMonitor.js');
 
+chatMonitor.startClient();
 
 router.get('/', function(req, res, next) {
     var redirect = '';
@@ -21,22 +22,21 @@ router.get('/', function(req, res, next) {
     }
 
     var oauthParams = {
-        'client_id': auth.client_id,
-        'redirect_uri': redirect,
-        'response_type': "code",
-        'scope': config.scope,
-        'force_verify': true,
-        'state': generateToken()
+        client_id: auth.client_id,
+        redirect_uri: redirect,
+        response_type: 'code',
+        scope: config.scope,
+        force_verify: true,
+        state: generateToken()
     };
     var oauthUrl = 'https://api.twitch.tv/kraken/oauth2/authorize'
             + getQueryString(oauthParams);
 
-    res.render('streamkit', {'title': 'Streamkit', 'oauth_url': oauthUrl});
+    res.render('streamkit', {title: 'Streamkit', oauth_url: oauthUrl});
 });
 
 
-router.get("/dashboard", function(req, response, next) {
-    // TODO: Get some proper error handling done.
+router.get('/dashboard', function(req, response, next) {
     // Make request for user token.
     oauth.getToken(req.query.code, req.query.state, function(err, res, body) {
         if (err) {
@@ -48,9 +48,7 @@ router.get("/dashboard", function(req, response, next) {
             return next(err);
         }
 
-        console.log('1: ' + body);
         body = JSON.parse(body); // TODO: Handle this in getToken fuction?
-        var token = body.access_token;
 
         oauth.validate(body.access_token, function(err, res, body) {
             if (err) {
@@ -62,15 +60,10 @@ router.get("/dashboard", function(req, response, next) {
                 return next(err);
             }
 
-            console.log('2 ' + body);
             body = JSON.parse(body);
-            //console.log(body);
-            var username = body.token.user_name;
+            chatMonitor.addUser(body.token.user_name);
 
-            console.log(username + ", " + token);
-            chatMonitor.addClient(username, token);
-
-            response.render('index', {title: 'Succ'});
+            response.render('index', {title: 'Success'});
         });
     });
 });
@@ -82,15 +75,15 @@ router.get("/dashboard", function(req, response, next) {
  * @returns {string} URL query string from Object.
  */
 function getQueryString(obj) {
-    var queryStr = "";
+    var queryStr = '';
 
     for (var property in obj) {
         if (obj.hasOwnProperty(property)) {
-            if (queryStr == "") {
-                queryStr = "?" + property + "=" + obj[property];
+            if (queryStr == '') {
+                queryStr = '?' + property + '=' + obj[property];
             }
             else {
-                queryStr += "&" + property + "=" + obj[property];
+                queryStr += '&' + property + '=' + obj[property];
             }
         }
     }
