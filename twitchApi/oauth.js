@@ -3,7 +3,6 @@ var request = require('request');
 var config = require('../config/config.json');
 var auth = require('../config/auth.json');
 
-
 /**
  * Sends a post request to get a access token from Twitch.
  * @param {string} code - Authorization code used to get the token.
@@ -12,16 +11,13 @@ var auth = require('../config/auth.json');
  */
 module.exports.getToken = function(code, state, callback) {
     var reqUrl = 'https://api.twitch.tv/kraken/oauth2/token';
-    
-    var redirect = 'http://localhost:4000/streamkit/dashboard';
-    // FIXME: Can't rely on req to get app here.
-    /*
-    if (req.app.get('env') == 'development') {
+
+    var redirect = '';
+    if (process.env.NODE_ENV == 'development') {
         redirect = config.redirect_uri.dev;
     } else {
         redirect = config.redirect_uri.prd;
     }
-    */
 
     var params = {
         'client_id': auth.client_id,
