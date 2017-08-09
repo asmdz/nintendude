@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="./stylesheets/bitbar.css">
+</head>
+<body>
+    <div id="container" class="bit-container">
+        <div id="title" class="bit-text"></div>
+        <div class="bit-canvas">
+            <canvas id="canvas" width="457" height="49"></canvas>
+        </div>
+        <div id="count" class="bit-text"></div>
+    </div>
+    <script src="./javascripts/bitbar.js"></script>
+    <script>
+        let bitBar = new BitBar('canvas', 'title', 'count', 'This is a title', '#21A9FF', '#000', 200, 2000);
+        //bitBar.updateTitle('This is a new title');
+        //bitBar.updateCurrentBitCount(400);
+        //bitBar.updateMaxBitCount(800);
+        //bitBar.updateColor('#ff4e60');
+        //bitBar.updateFillColor('#808080');
+    </script>
+</body>
+</html>
